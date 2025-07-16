@@ -30,6 +30,7 @@ graph TD;
     C --> D[Apache NiFi]
     D --> E[HDFS]
     E --> F[Apache Spark + Delta Lake]
+    F --> K[Dashboard]
 ```
 
 ---
