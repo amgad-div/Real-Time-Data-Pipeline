@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  namenode:
+    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    container_name: namenode
+    environment:
+      - CLUSTER_NAME=bigdata
+    ports:
+      - "9870:9870"    # HDFS Web UI
+    volumes:
+      - namenode:/hadoop/dfs/name
+    networks:
+      - bigdata_net
+
+  datanode:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode
+    environment:
+      - CLUSTER_NAME=bigdata
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:8020
+    volumes:
+      - datanode:/hadoop/dfs/data
+    depends_on:
+      - namenode
+    networks:
+      - bigdata_net
+
+  spark-master:
+    image: bitnami/spark:3.4.1
+    container_name: spark-master
+    environment:
+      - SPARK_MODE=master
+      - SPARK_MASTER_HOST=spark-master
+      - SPARK_MASTER_PORT=7077
+    ports:
+      - "8082:8080"    # Spark Master UI
+      - "7077:7077"    # Spark Master Port
+      - "8050:8050"
+    networks:
+      - bigdata_net
+
+  spark-worker-1:
+    image: bitnami/spark:3.4.1
+    container_name: spark-worker-1
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+    depends_on:
+      - spark-master
+    ports:
+      - "8089:8081"    # Spark Worker UI
+    networks:
+      - bigdata_net
+
+  spark-worker-2:
+    image: bitnami/spark:3.4.1
+    container_name: spark-worker-2
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+    depends_on:
+      - spark-master
+    networks:
+      - bigdata_net
+
+volumes:
+  namenode:
+  datanode:
+
+networks:
+  bigdata_net:
+    external: true
+
