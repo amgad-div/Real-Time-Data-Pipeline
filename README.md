@@ -1,4 +1,4 @@
-# Real-Time Data Pipeline: PostgreSQL → Debezium → Kafka → NiFi → HDFS → Spark (Delta Lake)
+# Real-Time Data Pipeline: PostgreSQL → Debezium → Kafka → NiFi → HDFS → Spark (Delta Lake) → Dashboard
 
 ##  Overview
 
@@ -64,7 +64,6 @@ docker-compose -f nifi.yml up -d
 
 This will spin up:
 
-* PostgreSQL
 * Debezium
 * Kafka
 * Zookeeper
@@ -89,7 +88,7 @@ docker exec -it kafka kafka-console-consumer.sh --bootstrap-server kafka:9092 --
 Execute the Spark job to process data and store results in Delta Lake:
 
 ```bash
-spark-submit --master spark://spark-master:7077 spark_jobs/CDC.py
+spark-submit --packages io.delta:delta-core_2.12:2.4.0 last_CDC.py
 ```
 
 ---
@@ -98,7 +97,7 @@ spark-submit --master spark://spark-master:7077 spark_jobs/CDC.py
 
 * Real-time CDC capture and processing.
 * Handles INSERT, UPDATE, DELETE operations.
-* Deduplication using Spark.
+* Delta table using Spark.
 
 ---
 
@@ -107,15 +106,10 @@ spark-submit --master spark://spark-master:7077 spark_jobs/CDC.py
 * Integrate **Apache Superset** or **Metabase** for interactive dashboards.
 * Add **Apache Airflow** for orchestration of pipeline jobs.
 * Implement **Apache Atlas** for data lineage and governance.
-* Enable role-based access control with **Apache Ranger**.
+
 
 ---
 
-## Contributing
-
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
----
 
 ## Author
 
