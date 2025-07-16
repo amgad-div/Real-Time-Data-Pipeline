@@ -7,10 +7,7 @@ from py4j.java_gateway import java_import
 import datetime
 
 # Spark Session
-spark = SparkSession.builder.appName("CDC Delta Fix") \
-    .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
-    .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog") \
-    .getOrCreate()
+spark = SparkSession.builder.appName("CDC Delta Fix").config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension").config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog").getOrCreate()
 spark.sparkContext.setLogLevel("ERROR")
 
 # Paths
