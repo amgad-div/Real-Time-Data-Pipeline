@@ -29,8 +29,7 @@ for status in fs.listStatus(archivePath):
 # readit 
 try:
     df_latest = spark.read.json(latest_file)
-    df_latest_flat = df_latest.selectExpr("payload.after.*", "payload.op") \
-                              .withColumn("id", col("id").cast("int"))
+    df_latest_flat = df_latest.selectExpr("payload.after.*", "payload.op").withColumn("id", col("id").cast("int"))
     df_latest_pd = df_latest_flat.toPandas()
     latest_filename = latest_file.split("/")[-1]
 except:
@@ -40,8 +39,7 @@ except:
 # read all archive file
 try:
     df_archive = spark.read.json("hdfs://namenode:8020/amgad/archive/*.*")
-    df_archive_flat = df_archive.selectExpr("payload.after.*", "payload.op") \
-                                .withColumn("id", col("id").cast("int"))
+    df_archive_flat = df_archive.selectExpr("payload.after.*", "payload.op").withColumn("id", col("id").cast("int"))
     df_archive_pd = df_archive_flat.toPandas()
 except:
     df_archive_pd = pd.DataFrame(columns=["id", "title", "category", "op"])
@@ -103,7 +101,7 @@ app.layout = html.Div([
 
     dcc.Graph(
         figure=px.pie(df_log_pd, names="operation", title=" add vs delete")
-    ),
+ ),
 
     html.H4("record history", style={"textAlign": "center", "marginTop": "30px"}),
 
